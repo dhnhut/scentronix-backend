@@ -27,10 +27,10 @@ export class ServerEndPoint {
       .head(this._url, {
         timeout: 1000 * 5,
       })
-      .then((_response) => {
+      .then((_res) => {
         this._available = true;
       })
-      .catch((_error) => {
+      .catch((_err) => {
         this._available = false;
       });
   }

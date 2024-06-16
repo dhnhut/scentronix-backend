@@ -1,33 +1,22 @@
-import { ServerEndPoint } from '../definitions/server-endpoint';
-
-function ServersEndPoint(): ServerEndPoint[] {
-  const servers: ServerEndPoint[] = [
-    new ServerEndPoint('https://does-not-work.perfume.new', 1),
-    new ServerEndPoint('https://gitlab.com', 4),
-    new ServerEndPoint('http://app.scnt.me', 3),
-    new ServerEndPoint('https://offline.scentronix.com', 2),
-  ];
-  return servers;
-}
+import ServerEndPoints from './server-endpoints';
 
 const getAvailableServers = async () => {
-  const endpoints = ServersEndPoint();
+  const endpoints = ServerEndPoints();
   const _res = await Promise.all(
     endpoints.map((s) => s.checkServerAvailability())
   );
-  let availableEndpoints = endpoints
-    .filter((endpoint) => endpoint.Available)
-    .sort((endpoint) => -endpoint.Priority);
-  return availableEndpoints;
+  return endpoints
+    .sort((a, b) => a.Priority - b.Priority)
+    .find((endpoint) => endpoint.Available);
 };
 
 const findServer = () => {
   return new Promise((resolve, reject) => {
     getAvailableServers().then((availableServers) => {
-      if (availableServers.length === 0) {
-        reject();
+      if (availableServers) {
+        resolve(availableServers);
       }
-      resolve(availableServers[0]);
+      reject('No any available server');
     });
   });
 };
