@@ -1,19 +1,37 @@
+import axios from 'axios';
+
 export class ServerEndPoint {
-  readonly url: string;
-  readonly priority: number;
+  readonly _url: string;
+  readonly _priority: number;
   private _available: boolean = false;
 
   constructor(url: string, priority: number) {
-    this.url = url;
-    this.priority = priority;
-    this.checkServerAvailability();
+    this._url = url;
+    this._priority = priority;
   }
 
-  public get available() {
+  public get Url() {
+    return this._url;
+  }
+
+  public get Priority() {
+    return this._priority;
+  }
+
+  public get Available() {
     return this._available;
   }
 
-  private checkServerAvailability() {
-    this._available = true;
+  public async checkServerAvailability() {
+    return axios
+      .head(this._url, {
+        timeout: 1000 * 5,
+      })
+      .then((_response) => {
+        this._available = true;
+      })
+      .catch((_error) => {
+        this._available = false;
+      });
   }
 }

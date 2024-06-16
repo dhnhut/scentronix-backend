@@ -1,15 +1,16 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 
 var express = require('express');
 var router = express.Router();
 
-var serverResolver = require('../libs/server-resolver');
+var findServer = require('../libs/find-server');
 
 /* GET home page. */
-router.get('/', function (_req: Request, res: Response, next: NextFunction) {
+router.get('/', async function (_req: Request, res: Response) {
+  var data = await findServer();
   res.render('index', {
-    title: 'Express',
-    server: JSON.stringify(serverResolver(),null, 4),
+    title: 'Scentronix Backend Test',
+    server: JSON.stringify(data, null, 4),
   });
 });
 
